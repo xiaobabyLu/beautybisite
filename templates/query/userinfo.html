@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load pagetag %}
+{% block title %}客户信息{% endblock %}
+
+{% block content %}
+<form class="form-horizontal" method="post"> {% csrf_token %}
+        {% for item in user_info %}
+          <div class="form-group">
+            {% if item.field.required %}
+              <label class="col-sm-2 control-label">*{{ item.label }}</label>
+            {% else %}
+                <label style="font-weight: normal" class="col-sm-2 control-label">{{ item.label }}</label>
+            {% endif %}
+
+            <div class="col-sm-10">
+              {{ item }}
+            </div>
+          </div>
+        {% endfor %}
+        <div class="pull-right col-sm-pull-11">
+            <button type="submit" class="btn btn-success">保存数据</button>
+        </div>
+
+    </form>
+{% endblock %}}

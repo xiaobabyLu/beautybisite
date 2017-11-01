@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}添加用户{% endblock %}
+{% block somescript %}
+
+{% endblock %}
+{% block otherstyle %}
+    <style>
+        .form-signin {
+            margin: 0 auto;
+            max-width: 330px;
+            padding: 15px;
+        }
+
+        .form-signin .form-signin-heading, .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            box-sizing: border-box;
+            font-size: 16px;
+            height: auto;
+            padding: 10px;
+            position: relative;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="text"] {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-bottom: 1px;
+            margin-top: -7px;
+        }
+
+        .form-signin button {
+            margin-top: 50px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <form role="form" action="{% url 'users:add_user' %}" class="form-signin" method="post">
+    <span style="color:#ff0000;">{% csrf_token %}</span>
+        {% csrf_token %}
+        <p>用户id：</p>
+        <input type="text" id="user_id" placeholder="用户id" name="user_id" class="form-control">
+        <p>用户昵称：</p>
+        <input type="text" id="nickname" placeholder="用户昵称" name="nickname" class="form-control">
+        <button type="submit" id="submit" class="btn btn-lg btn-primary btn-block">提交</button>
+    </form>
+{% endblock %}
