@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,render_to_response
 from django.http.response import HttpResponseRedirect
 from django.http import HttpResponse
+from django.template import RequestContext
 from random import choice
+from django.db.models import Q
 import string
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
@@ -10,8 +12,10 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from .permissions import check_permission
 from .forms import RegisterForm,UserListForm
+from haystack.forms import SearchForm
 from .models import User,BeautyUsers
-
+import json
+from .tools import JsonCustomEncoder
 
 def index(request):
     return render(request,'index.html')
@@ -53,12 +57,15 @@ def sendemail(request):
         return HttpResponse("您的邮箱的账户注册信息没有找到")
 
 
+def del_user(request,user_id):
+    BeautyUsers.objects.filter(user_id=user_id).delete()
+    return redirect('/users/userlist/')
+
+
 def add_user(request):
     if request.method == 'POST':
         user = request.user
-        print(user)
         user_id = request.POST['user_id']
-        print(user_id)
         nickname = request.POST['nickname']
         try:
             BeautyUsers.objects.create(user_id=user_id, nickname=nickname,add_people=user)
@@ -70,7 +77,7 @@ def add_user(request):
 
 def userlist(request):
         user_list = BeautyUsers.objects.all()
-        paginator = Paginator(user_list, 2, 2)
+        paginator = Paginator(user_list, 5, 2)
         page = request.GET.get('page')
         try:
             customer = paginator.page(page)
@@ -82,7 +89,7 @@ def userlist(request):
 
 
 # @check_permission
-def userInfo(request,user_id):
+def edit_user(request,user_id):
     user_obj = BeautyUsers.objects.get(pk=user_id)
     if request.method == 'POST':
         form = UserListForm(request.POST, instance=user_obj)
@@ -90,11 +97,10 @@ def userInfo(request,user_id):
             form.save()
             return HttpResponse('保存成功！')
         else:
-            print
-            form.errors
+            print(form.errors)
     else:
         form = UserListForm(instance=user_obj)
-    return render(request, 'query/userinfo.html', {'user_info': form})
+    return render(request, 'query/api/edit_user.html', {'user_info': form})
 
 # @login_required(login_url='/kucun/login')
 # def add_goods(request):
@@ -143,3 +149,25 @@ def userInfo(request,user_id):
 #             refund_record = RefundRecord(sell_record=record, updater=user)
 #             refund_record.save()
 #         return HttpResponse(arrears)
+
+def testcharts(request):
+    if request.method == 'GET':
+        topMusics = [
+            ["晴天", 1329.656],
+            ["告白气球", 248.533],
+            ["演员", 175.353],
+            ["Five Hundred Miles", 121.012],
+            ["Booty Music", 111.814],
+            ["超越无限", 105.345],
+            ["刚刚好", 104.539],
+            ["你还要我怎样", 102.994],
+            ["夜空中最亮的星", 84.444],
+            ["全世界谁倾听你 ", 64.522],
+        ]
+
+        lists = []
+        for music_info in topMusics:
+            lists.append(music_info)
+        lists = json.dumps(lists)
+        return render_to_response('charts/testchart.html',{'lists': lists})
+

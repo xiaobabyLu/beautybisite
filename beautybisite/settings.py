@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -156,5 +157,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Haystack
+# Whoosh jieba
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'users.whoosh_cn_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index')
+    },
+}
 
-
+# auto update index
+HAYSTACK_SIGNAL_PROCESSOR ='haystack.signals.RealtimeSignalProcessor'
+# pagenum = 8
+HAYSTACK_SEARCH_RESULTS_PER_PAGE  =  8

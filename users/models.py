@@ -23,8 +23,9 @@ class BeautyUsers(models.Model):
     add_people = models.ForeignKey(User)
 
     def __str__(self):
-        return self.user_id, self.nickname
-
+        return self.nickname
+    # ,self.gender
+        # return '{},{}'.format(self.nickname, self.gender)
     class Meta:
         db_table = 'BeautyUsers' #自定义表名称为mytable
         verbose_name = '黑名单列表' #指定在admin管理界面中显示的名称

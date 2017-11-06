@@ -16,12 +16,13 @@
             <td>更新时间</td>
             <td>状态</td>
             <td>添加人</td>
+            <td>操作</td>
         </tr>
   </thead>
         <tbody>
             {% for customer in user_list  %}
                 <tr>
-                    <td><a href="{% url 'users:userinfo' customer.user_id %}">{{customer.user_id}}</a></td>
+                    <td><a href="{% url 'users:edit_user' customer.user_id %}">{{customer.user_id}}</a></td>
                     <td>{{customer.user_id}}</td>
                     <td>{{customer.user_type|upper}}</td>
                     <td>{{customer.nickname}}</td>
@@ -31,6 +32,11 @@
                     <td>{{customer.update_date}}</td>
                     <td class="{{ customer.is_delete }}">{{customer.is_delete}}</td>
                     <td>{{customer.add_people_id}}</td>
+                    <td>
+                        <a href="{% url 'users:del_user' customer.user_id %}">删除</a>
+                        |
+                        <a href="{% url 'users:edit_user' customer.user_id %}">编辑</a>
+                    </td>>
                 </tr>
             {% endfor %}
         </tbody>
